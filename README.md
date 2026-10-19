@@ -77,6 +77,11 @@ meaningful name before asking your existing generative provider for a replacemen
 This works with every provider (`openai`, `anthropic`, `gemini`, `ollama`,
 `openrouter`, and `requesty`) and is **disabled by default**.
 
+Use `humanify -h` for the command overview, or
+`humanify openai -h` / `humanify openai --help` for the decision
+options, defaults, environment variables and examples. The same options are
+available in every provider subcommand.
+
 For hosted [Jev](https://docs.typesafe.ai/api), configure a separate decision key:
 
 ```shell
@@ -226,8 +231,11 @@ humanify <openai|gemini|anthropic|ollama|openrouter|requesty> [FLAGS] <INPUT>
   `forced-tool-call`, `tool-call-and-prompt`, `prompt`.
 * `-v` prints resolved configuration and identifier-level rename steps to stderr.
 * `--progress` shows an identifier progress bar on stderr.
+* `--decision-provider jev|laya` enables optional name-quality decisions; see
+  [Jev / Laya setup](#optional-jev--laya-decisions) for the separate API settings.
 
-Run `humanify --help` for the full reference.
+Run `humanify -h` for commands and `humanify <COMMAND> -h`
+(or `--help`) for that provider's complete options and examples.
 
 Note: humanify does one job — rename identifiers in one JavaScript file in,
 one out. To unbundle webpack output first, pipe through e.g.
@@ -348,6 +356,9 @@ humanify requesty obfuscated.js -m nvidia/nemotron-3-super-120b-a12b
 ```
 
 ## Features
+
+* Optional [Jev / Laya decisions](#optional-jev--laya-decisions), with hosted,
+  self-hosted and Apple Silicon MLX support; disabled by default.
 
 * Uses LLMs to get smart suggestions to rename variable and function names, and
   make the rename using deterministic AST-level shenanigans via [oxc][oxc]
