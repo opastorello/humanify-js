@@ -8,7 +8,8 @@ const EXIT_CLI_USAGE: i32 = 64;
 #[command(
     name = "humanify",
     version,
-    about = "Un-minify JavaScript with LLM help"
+    about = "Un-minify JavaScript with LLM help",
+    after_help = "Optional Jev/Laya decisions are disabled by default. They evaluate existing names; your selected provider still generates new names.\nRun humanify <COMMAND> --help for decision API options and examples."
 )]
 struct Cli {
     #[command(subcommand)]
@@ -17,16 +18,28 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
+    /// Generate names with an OpenAI-compatible API
     Openai(SubArgs),
+    /// Generate names with Gemini
     Gemini(SubArgs),
+    /// Generate names with Anthropic
     Anthropic(SubArgs),
+    /// Generate names with a local Ollama model
     Ollama(SubArgs),
+    /// Generate names through OpenRouter
     Openrouter(SubArgs),
+    /// Generate names through Requesty
     Requesty(SubArgs),
 }
 
 #[derive(Parser)]
+#[command(
+    after_help = "Examples:\n  humanify openai input.js --decision-provider jev\n  humanify ollama input.js --decision-provider laya --decision-base-url http://127.0.0.1:8000/v1\n\nJev uses TYPESAFE_API_KEY; Laya uses LAYA_API_KEY (optional for local servers).\nFor the MLX bridge, also set --decision-model to the exact model loaded by the server.\nDecision requests can increase runtime; the generative provider is still needed to propose new names."
+)]
 struct SubArgs {
+    #[command(flatten)]
+    decision: humanify::llm::decision::DecisionArgs,
+
     /// Filename, or `-` for stdin
     input: String,
 
@@ -80,6 +93,7 @@ fn into_openai_args(a: SubArgs) -> openai::Args {
         verbose: a.verbose,
         progress: a.progress,
         timeout_seconds: a.timeout_seconds,
+        decision: a.decision,
     }
 }
 
@@ -95,6 +109,7 @@ fn into_gemini_args(a: SubArgs) -> gemini::Args {
         verbose: a.verbose,
         progress: a.progress,
         timeout_seconds: a.timeout_seconds,
+        decision: a.decision,
     }
 }
 
@@ -110,6 +125,7 @@ fn into_anthropic_args(a: SubArgs) -> anthropic::Args {
         verbose: a.verbose,
         progress: a.progress,
         timeout_seconds: a.timeout_seconds,
+        decision: a.decision,
     }
 }
 
@@ -125,6 +141,7 @@ fn into_ollama_args(a: SubArgs) -> ollama::Args {
         verbose: a.verbose,
         progress: a.progress,
         timeout_seconds: a.timeout_seconds,
+        decision: a.decision,
     }
 }
 
@@ -140,6 +157,7 @@ fn into_openrouter_args(a: SubArgs) -> openrouter::Args {
         verbose: a.verbose,
         progress: a.progress,
         timeout_seconds: a.timeout_seconds,
+        decision: a.decision,
     }
 }
 
@@ -155,6 +173,7 @@ fn into_requesty_args(a: SubArgs) -> requesty::Args {
         verbose: a.verbose,
         progress: a.progress,
         timeout_seconds: a.timeout_seconds,
+        decision: a.decision,
     }
 }
 
