@@ -27,6 +27,9 @@ enum Commands {
 
 #[derive(Parser)]
 struct SubArgs {
+    #[command(flatten)]
+    decision: humanify::llm::decision::DecisionArgs,
+
     /// Filename, or `-` for stdin
     input: String,
 
@@ -80,6 +83,7 @@ fn into_openai_args(a: SubArgs) -> openai::Args {
         verbose: a.verbose,
         progress: a.progress,
         timeout_seconds: a.timeout_seconds,
+        decision: a.decision,
     }
 }
 
@@ -95,6 +99,7 @@ fn into_gemini_args(a: SubArgs) -> gemini::Args {
         verbose: a.verbose,
         progress: a.progress,
         timeout_seconds: a.timeout_seconds,
+        decision: a.decision,
     }
 }
 
@@ -110,6 +115,7 @@ fn into_anthropic_args(a: SubArgs) -> anthropic::Args {
         verbose: a.verbose,
         progress: a.progress,
         timeout_seconds: a.timeout_seconds,
+        decision: a.decision,
     }
 }
 
@@ -125,6 +131,7 @@ fn into_ollama_args(a: SubArgs) -> ollama::Args {
         verbose: a.verbose,
         progress: a.progress,
         timeout_seconds: a.timeout_seconds,
+        decision: a.decision,
     }
 }
 
@@ -140,6 +147,7 @@ fn into_openrouter_args(a: SubArgs) -> openrouter::Args {
         verbose: a.verbose,
         progress: a.progress,
         timeout_seconds: a.timeout_seconds,
+        decision: a.decision,
     }
 }
 
@@ -155,6 +163,7 @@ fn into_requesty_args(a: SubArgs) -> requesty::Args {
         verbose: a.verbose,
         progress: a.progress,
         timeout_seconds: a.timeout_seconds,
+        decision: a.decision,
     }
 }
 
